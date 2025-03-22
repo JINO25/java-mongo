@@ -59,6 +59,7 @@ public class MongoDB {
             System.out.println("User "+i);
             System.out.printf("Name          : %s%n", doc.getString("name"));
             System.out.printf("Email         : %s%n", doc.getString("email"));
+            System.out.printf("Major         : %s%n", doc.getString("major"));
             System.out.printf("Address       : %s%n", doc.getString("address"));
             System.out.printf("Phone         : %s%n", doc.getString("phone"));
             System.out.printf("Date of Birth : %s%n", doc.getString("dateofBirth"));
@@ -78,11 +79,12 @@ public class MongoDB {
 
     public void createUser() {
         Scanner scanner = new Scanner(System.in);
-        String name, email, address, date, phone;
+        String name, email, major, address, date, phone;
         System.out.print("Enter name: ");
         name = scanner.nextLine();
         System.out.print("Enter email: ");
-        email = scanner.nextLine();
+        email = scanner.nextLine();System.out.print("Enter your major: ");
+        major = scanner.nextLine();
         System.out.print("Enter date of birht (yyyy/mm/dd): ");
         date = scanner.nextLine();
         System.out.print("Enter your address: ");
@@ -116,6 +118,7 @@ public class MongoDB {
             // Tạo document cho người dùng
             Document user = new Document("name", name)
                     .append("email", email)
+                    .append("major",major)
                     .append("dateofBirth", date)
                     .append("address", address)
                     .append("phone", phone)
@@ -137,6 +140,7 @@ public class MongoDB {
             System.out.println("========================================");
             System.out.printf("Name          : %s%n", doc.getString("name"));
             System.out.printf("Email         : %s%n", doc.getString("email"));
+            System.out.printf("Major         : %s%n", doc.getString("major"));
             System.out.printf("Address       : %s%n", doc.getString("address"));
             System.out.printf("Phone         : %s%n", doc.getString("phone"));
             System.out.printf("Date of Birth : %s%n", doc.getString("dateofBirth"));
@@ -159,7 +163,7 @@ public class MongoDB {
         }
     }
 
-    public void updateUser(String email, String name, String date, String address, String phone, String subject, double score) {
+    public void updateUser(String email, String name, String major, String date, String address, String phone, String subject, double score) {
         MongoCollection<Document> collection = database.getCollection("User");
         Document doc = collection.find(Filters.eq("email", email)).first();
 
@@ -173,6 +177,9 @@ public class MongoDB {
             }
             if (date != null && !date.isEmpty()) {
                 updateFields.append("dateofBirth", date);
+            }
+            if (major != null && !major.isEmpty()) {
+                updateFields.append("major", major  );
             }
             if (address != null && !address.isEmpty()) {
                 updateFields.append("address", address);
@@ -201,8 +208,6 @@ public class MongoDB {
                 updateFields.append("curriculums", list);
 
             }
-
-
 
             if (!updateFields.isEmpty()) {
                 collection.updateOne(Filters.eq("email", email), new Document("$set", updateFields));
