@@ -16,9 +16,14 @@ import java.util.stream.Collectors;
 
 public class MongoDB {
     String urlCon ="mongodb://localhost:27017";
-    boolean collectionExists=true;
+    boolean collectionExists=false;
+    boolean databaseExists = false;
+
     private MongoClient mongoClient;
     private MongoDatabase database;
+
+    private String databaseName = "mongo_java";
+    private String collection = "User";
 
     public MongoDB() {
         this.connect();
@@ -28,20 +33,40 @@ public class MongoDB {
         try{
             mongoClient = MongoClients.create(urlCon);
             System.out.println("Connected successfully!");
-            database = (MongoDatabase) mongoClient.getDatabase("Excersice");
+
+            MongoIterable<Document> listDatabasesIterable = mongoClient.listDatabases();
+            for(Document iterable : listDatabasesIterable){
+                String name = iterable.getString("name");
+                if(name.equals(databaseName)){
+                    databaseExists=true;
+                    break;
+                }
+            }
+
+            if(!databaseExists){
+                database= mongoClient.getDatabase(databaseName);
+                database.getCollection("initCollection").insertOne(new Document("init","created"));
+                System.out.println("database '"+databaseName+"' created.");
+            }else{
+                System.out.println("database '"+databaseName+"'  already exists.");
+            }
+
+            database = mongoClient.getDatabase(databaseName);
+
             ListCollectionsIterable<Document> list= database.listCollections();
-            for (Document name : list) {
-                if (name.equals("User")) {
-                    collectionExists = false;
+            for (Document doc : list) {
+                String name = doc.getString("name");
+                if (name.equals(collection)) {
+                    collectionExists = true;
                     break;
                 }
             }
 
             if (!collectionExists) {
-                database.createCollection("User");
-                System.out.println("Collection 'User' created.");
+                database.createCollection(collection);
+                System.out.println("Collection '"+collection+"' created.");
             } else {
-                System.out.println("Collection 'User' already exists.");
+                System.out.println("Collection '"+collection+"' already exists.");
             }
 
         }catch (Exception e){
@@ -50,13 +75,13 @@ public class MongoDB {
     }
 
     public void findAll(){
-        MongoCollection<Document> collection = database.getCollection("User");
+        MongoCollection<Document> collection = database.getCollection(this.collection);
         Bson projectionFileds = Projections.fields(Projections.excludeId());
         FindIterable<Document> documents = collection.find().projection(projectionFileds);
         int i=1;
         for(Document doc : documents){
 
-            System.out.println("User "+i);
+            System.out.println("------------User "+i+"------------");
             System.out.printf("Name          : %s%n", doc.getString("name"));
             System.out.printf("Email         : %s%n", doc.getString("email"));
             System.out.printf("Major         : %s%n", doc.getString("major"));
@@ -92,7 +117,7 @@ public class MongoDB {
         System.out.print("Enter your phone: ");
         phone = scanner.nextLine();
 
-        MongoCollection<Document> collection = database.getCollection("User");
+        MongoCollection<Document> collection = database.getCollection(this.collection);
         Document doc = collection.find(Filters.eq("email", email)).first();
 
         if (doc == null) {
@@ -132,7 +157,7 @@ public class MongoDB {
     }
 
     public void findUserByEmail(String email){
-        MongoCollection<Document> collection = database.getCollection("User");
+        MongoCollection<Document> collection = database.getCollection(this.collection);
         Document doc = collection.find(Filters.eq("email",email)).projection(Projections.excludeId()).first();
         if (doc != null) {
             System.out.println("========================================");
@@ -164,7 +189,7 @@ public class MongoDB {
     }
 
     public void updateUser(String email, String name, String major, String date, String address, String phone, String subject, double score) {
-        MongoCollection<Document> collection = database.getCollection("User");
+        MongoCollection<Document> collection = database.getCollection(this.collection);
         Document doc = collection.find(Filters.eq("email", email)).first();
 
         if (doc == null) {
@@ -220,7 +245,7 @@ public class MongoDB {
 
     public void inserSubject(String email){
         Scanner scanner = new Scanner(System.in);
-        MongoCollection<Document> collection = database.getCollection("User");
+        MongoCollection<Document> collection = database.getCollection(this.collection);
         Document doc = collection.find(Filters.eq("email",email)).first();
         if(doc == null){
             System.out.println("User not found");
@@ -251,7 +276,7 @@ public class MongoDB {
 
     public void deleteSubject(String email){
         Scanner scanner = new Scanner(System.in);
-        MongoCollection<Document> collection = database.getCollection("User");
+        MongoCollection<Document> collection = database.getCollection(this.collection);
         Document doc = collection.find(Filters.eq("email",email)).first();
         if(doc == null){
             System.out.println("User not found");
@@ -264,7 +289,7 @@ public class MongoDB {
     }
 
     public void deleteUser(String email){
-        MongoCollection<Document> collection = database.getCollection("User");
+        MongoCollection<Document> collection = database.getCollection(this.collection);
         Document doc = collection.find(Filters.eq("email", email)).first();
         if(doc == null){
             System.out.println("User not found");
