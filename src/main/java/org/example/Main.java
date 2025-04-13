@@ -30,7 +30,7 @@ public class Main {
                     r=false;
                     break;
                 case 1:
-                    scanner.nextLine(); // Consume newline
+                    scanner.nextLine();
                     System.out.print("Enter email to update: ");
                     email = scanner.nextLine();
                     System.out.print("Enter new name: ");
@@ -39,7 +39,7 @@ public class Main {
                     break;
 
                 case 2:
-                    scanner.nextLine(); // Consume newline
+                    scanner.nextLine();
                     System.out.print("Enter email to update: ");
                     email = scanner.nextLine();
                     System.out.print("Enter new date of birth (yyyy/mm/dd): ");
@@ -48,7 +48,7 @@ public class Main {
                     break;
 
                 case 3:
-                    scanner.nextLine(); // Consume newline
+                    scanner.nextLine();
                     System.out.print("Enter email to update: ");
                     email = scanner.nextLine();
                     System.out.print("Enter new address: ");
@@ -57,7 +57,7 @@ public class Main {
                     break;
 
                 case 4:
-                    scanner.nextLine(); // Consume newline
+                    scanner.nextLine();
                     System.out.print("Enter email to update: ");
                     email = scanner.nextLine();
                     System.out.print("Enter new phone number: ");

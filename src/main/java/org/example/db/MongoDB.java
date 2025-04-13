@@ -126,7 +126,7 @@ public class MongoDB {
             // Nhập số lượng môn học
             System.out.print("Enter the number of subject: ");
             int numSubjects = scanner.nextInt();
-            scanner.nextLine(); // Đọc ký tự xuống dòng còn sót lại
+            scanner.nextLine();
 
             // Nhập thông tin từng môn học
             for (int i = 0; i < numSubjects; i++) {
@@ -135,19 +135,18 @@ public class MongoDB {
 
                 System.out.print("Enter the score of " + subject + ": ");
                 double score = scanner.nextDouble();
-                scanner.nextLine(); // Đọc ký tự xuống dòng còn sót lại
+                scanner.nextLine();
 
                 resultList.add(new Document("subject", subject).append("point", score));
             }
 
-            // Tạo document cho người dùng
             Document user = new Document("name", name)
                     .append("email", email)
                     .append("major",major)
                     .append("dateofBirth", date)
                     .append("address", address)
                     .append("phone", phone)
-                    .append("curriculums", resultList); // Thêm danh sách điểm vào
+                    .append("curriculums", resultList);
 
             collection.insertOne(user);
             System.out.println("Users are inserted successful!");
