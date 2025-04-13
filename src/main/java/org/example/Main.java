@@ -92,7 +92,7 @@ public class Main {
                 case 7:
                     System.out.print("Enter email of user: ");
                     email = scanner.nextLine();
-                    mongoDB.inserSubject(email);
+                    mongoDB.insertSubject(email);
                     break;
                 case 8:
                     System.out.print("Enter email of user: ");

@@ -23,7 +23,7 @@ public class MongoDB {
     private MongoDatabase database;
 
     private String databaseName = "mongo_java";
-    private String collection = "User";
+    private String collection = "Student";
 
     public MongoDB() {
         this.connect();
@@ -243,7 +243,7 @@ public class MongoDB {
         }
     }
 
-    public void inserSubject(String email){
+    public void insertSubject(String email){
         Scanner scanner = new Scanner(System.in);
         MongoCollection<Document> collection = database.getCollection(this.collection);
         Document doc = collection.find(Filters.eq("email",email)).first();
